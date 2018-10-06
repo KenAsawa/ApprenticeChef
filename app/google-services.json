@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "283195542897",
+    "firebase_url": "https://apprenticechef-4a936.firebaseio.com",
+    "project_id": "apprenticechef-4a936",
+    "storage_bucket": "apprenticechef-4a936.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283195542897:android:fdbd390dec8fc98e",
+        "android_client_info": {
+          "package_name": "com.sszg.apprenticechef"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "283195542897-2a7s31mdrqkm7shfcs9k0gr5mma5rrea.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sszg.apprenticechef",
+            "certificate_hash": "2a170116add58dd51237dfa97f36ae783ebb5678"
+          }
+        },
+        {
+          "client_id": "283195542897-h2s0s5n8og0rv0gifq43cu4oomilfl9o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA93uFdl40MvQqVp0wzyPegT05EEI1t4FU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "283195542897-h2s0s5n8og0rv0gifq43cu4oomilfl9o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
