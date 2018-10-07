@@ -136,7 +136,7 @@ public class RecipeListActivity extends AppCompatActivity implements MyRecyclerV
 
     public void setupGrid() {
         recyclerView = findViewById(R.id.recyclerView);
-        int numOfColumns = 2;
+        int numOfColumns = 1;
         recyclerView.setLayoutManager(new GridLayoutManager(this, numOfColumns));
         adapter = new MyRecyclerViewAdapter();
         adapter.setClickListener(this);
@@ -145,8 +145,8 @@ public class RecipeListActivity extends AppCompatActivity implements MyRecyclerV
 
     public void populateGrid() {
         RecipeListItem recipe1 = new RecipeListItem("pizza", "Pepperoni Pizza", "12/08/18");
-        RecipeListItem recipe2 = new RecipeListItem("pizza", "Cheese Pizza", "12/03/18");
-        RecipeListItem recipe3 = new RecipeListItem("pizza", "Sasauge Pizza", "11/09/17");
+        RecipeListItem recipe2 = new RecipeListItem("pasta", "Alfredo Pasta", "12/03/18");
+        RecipeListItem recipe3 = new RecipeListItem("pancakes", "Pancakes & Eggs", "11/09/17");
         adapter.addRecipe(recipe1);
         adapter.addRecipe(recipe2);
         adapter.addRecipe(recipe3);

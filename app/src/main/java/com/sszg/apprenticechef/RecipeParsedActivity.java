@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -12,6 +15,8 @@ public class RecipeParsedActivity extends AppCompatActivity implements ListRecyc
 
     private RecyclerView recyclerView;
     private ListRecyclerView adapter;
+    private Button portion;
+    private EditText divisor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,24 +29,54 @@ public class RecipeParsedActivity extends AppCompatActivity implements ListRecyc
             if (listToParse != null) {
                 items = listToParse.split("\n");
             }
-            ArrayList<String> itemList = new ArrayList<>();
+            final ArrayList<String> itemList = new ArrayList<>();
             for (String s : items) {
                 String[] parts = s.split(" ");
                 if (parts.length > 3) {
                     try {
-                        Integer.parseInt(parts[0]);
-                        itemList.add(s);
+                        if (parts[0].contains("/")) {
+                            itemList.add(s);
+                        } else {
+                            Integer.parseInt(parts[0]);
+                            itemList.add(s);
+                        }
                     } catch (Exception ex) {
 
                     }
                 }
             }
-            System.out.println("LIST BEFORE IS : " + itemList);
-            itemList = RecipeMath.GetBestMeasure(itemList, 1, false);
-            System.out.println("LIST AFTER IS : " + itemList);
+            portion = findViewById(R.id.portion);
+            divisor = findViewById(R.id.divisor);
             setupGrid(itemList);
+            portion.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        int d = Integer.parseInt(divisor.getText().toString().trim());
+                        if (d > 0) {
+                            //System.out.println("LIST BEFORE IS : " + itemList);
+                            ArrayList<String> newList = RecipeMath.GetBestMeasure(itemList, d, false);
+                            //System.out.println("LIST AFTER IS : " + newList);
+                            setupList(newList);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please Cut Portions by a number Greater then 0", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception ex) {
+
+                    }
+
+                }
+            });
         }
 
+    }
+
+    public void setupList(ArrayList<String> items) {
+        adapter.clearList();
+        for (String s : items) {
+            adapter.addIngredient(s);
+        }
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -51,10 +86,7 @@ public class RecipeParsedActivity extends AppCompatActivity implements ListRecyc
         adapter = new ListRecyclerView();
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
-        for (String s : items) {
-            adapter.addIngredient(s);
-        }
-        adapter.notifyDataSetChanged();
+        setupList(items);
     }
 
     @Override

@@ -20,6 +20,10 @@ public class ListRecyclerView extends RecyclerView.Adapter<ListRecyclerView.View
         mData = new ArrayList<>();
     }
 
+    public void clearList(){
+        mData.clear();
+    }
+
     public void addIngredient(String ingredient) {
         mData.add(ingredient);
     }
