@@ -28,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+        if (mAuth != null) {
+            mAuth.signOut();
+        }
 
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
             updateUI(currentUser);
         }
     }
+
 
     public void updateUI(FirebaseUser user) {
         if (user != null) {
