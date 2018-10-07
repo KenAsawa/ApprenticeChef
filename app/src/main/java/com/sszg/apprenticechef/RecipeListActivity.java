@@ -108,8 +108,8 @@ public class RecipeListActivity extends AppCompatActivity implements MyRecyclerV
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(),
-                                    text.getText(), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getApplicationContext(),
+                            //        text.getText(), Toast.LENGTH_LONG).show();
                             System.out.println(text.getText());
                             Intent intent = new Intent(RecipeListActivity.this, RecipeParsedActivity.class);
                             intent.putExtra("INGREDIENTS", text.getText());
