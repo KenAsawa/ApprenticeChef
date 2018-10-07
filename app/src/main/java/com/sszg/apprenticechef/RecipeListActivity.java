@@ -24,10 +24,10 @@ import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
 import com.google.api.services.vision.v1.model.TextAnnotation;
-import com.soundcloud.android.crop.Crop;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +47,10 @@ public class RecipeListActivity extends AppCompatActivity implements MyRecyclerV
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Crop.pickImage(RecipeListActivity.this);
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(RecipeListActivity.this);
+
 
             }
         });
@@ -56,75 +59,68 @@ public class RecipeListActivity extends AppCompatActivity implements MyRecyclerV
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent result) {
-        if (requestCode == Crop.REQUEST_PICK && resultCode == RESULT_OK) {
-            beginCrop(result.getData());
-        } else if (requestCode == Crop.REQUEST_CROP) {
-            try {
-                handleCrop(resultCode, result);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                Toast.makeText(getApplicationContext(), "Parsing Recipe...", Toast.LENGTH_LONG).show();
+                OCR(resultUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
             }
         }
     }
 
-    private void beginCrop(Uri source) {
-        Uri destination = Uri.fromFile(new File(getCacheDir(), "cropped"));
-        Crop.of(source, destination).start(this);
-    }
+    public void OCR(final Uri croppedImage) {
+        Vision.Builder visionBuilder = new Vision.Builder(
+                new NetHttpTransport(),
+                new AndroidJsonFactory(),
+                null);
 
-    private void handleCrop(int resultCode, Intent result) throws FileNotFoundException {
-        if (resultCode == RESULT_OK) {
-            final Uri croppedImage = Crop.getOutput(result);
-            Vision.Builder visionBuilder = new Vision.Builder(
-                    new NetHttpTransport(),
-                    new AndroidJsonFactory(),
-                    null);
+        visionBuilder.setVisionRequestInitializer(
+                new VisionRequestInitializer("AIzaSyA93uFdl40MvQqVp0wzyPegT05EEI1t4FU"));
+        final Vision vision = visionBuilder.build();
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                final InputStream imageStream;
+                try {
+                    imageStream = getContentResolver().openInputStream(croppedImage);
+                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    String encodedImage = encodeImage(selectedImage);
+                    Image inputImage = new Image();
+                    inputImage.setContent(encodedImage);
+                    Feature desiredFeature = new Feature();
+                    desiredFeature.setType("DOCUMENT_TEXT_DETECTION");
+                    AnnotateImageRequest request = new AnnotateImageRequest();
+                    request.setImage(inputImage);
+                    request.setFeatures(Arrays.asList(desiredFeature));
+                    BatchAnnotateImagesRequest batchRequest =
+                            new BatchAnnotateImagesRequest();
 
-            visionBuilder.setVisionRequestInitializer(
-                    new VisionRequestInitializer("AIzaSyA93uFdl40MvQqVp0wzyPegT05EEI1t4FU"));
-            final Vision vision = visionBuilder.build();
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    final InputStream imageStream;
-                    try {
-                        imageStream = getContentResolver().openInputStream(croppedImage);
-                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                        String encodedImage = encodeImage(selectedImage);
-                        Image inputImage = new Image();
-                        inputImage.setContent(encodedImage);
-                        Feature desiredFeature = new Feature();
-                        desiredFeature.setType("DOCUMENT_TEXT_DETECTION");
-                        AnnotateImageRequest request = new AnnotateImageRequest();
-                        request.setImage(inputImage);
-                        request.setFeatures(Arrays.asList(desiredFeature));
-                        BatchAnnotateImagesRequest batchRequest =
-                                new BatchAnnotateImagesRequest();
-
-                        batchRequest.setRequests(Arrays.asList(request));
-                        BatchAnnotateImagesResponse batchResponse =
-                                vision.images().annotate(batchRequest).execute();
-                        final TextAnnotation text = batchResponse.getResponses()
-                                .get(0).getFullTextAnnotation();
-                        // Display toast on UI thread
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(),
-                                        text.getText(), Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    batchRequest.setRequests(Arrays.asList(request));
+                    BatchAnnotateImagesResponse batchResponse =
+                            vision.images().annotate(batchRequest).execute();
+                    final TextAnnotation text = batchResponse.getResponses()
+                            .get(0).getFullTextAnnotation();
+                    // Display toast on UI thread
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    text.getText(), Toast.LENGTH_LONG).show();
+                            System.out.println(text.getText());
+                        }
+                    });
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
-        } else if (resultCode == Crop.RESULT_ERROR) {
-            Toast.makeText(this, Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
-        }
+            }
+        });
+
     }
 
     private String encodeImage(Bitmap bm) {
