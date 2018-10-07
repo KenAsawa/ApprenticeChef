@@ -1,5 +1,6 @@
 package com.sszg.apprenticechef;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -111,8 +112,13 @@ public class MainActivity extends AppCompatActivity {
             boolean emailVerified = user.isEmailVerified();
             String uid = user.getUid();
             System.out.println("USER FIREBASE: " + user);
+            Intent intent = new Intent(this, RecipeListActivity.class);
+            startActivity(intent);
         } else {
+            username.setText("");
+            password.setText("");
 
+            Toast.makeText(getApplicationContext(), "Please retry your email and password", Toast.LENGTH_SHORT).show();
         }
     }
 }
