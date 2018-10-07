@@ -111,6 +111,9 @@ public class RecipeListActivity extends AppCompatActivity implements MyRecyclerV
                             Toast.makeText(getApplicationContext(),
                                     text.getText(), Toast.LENGTH_LONG).show();
                             System.out.println(text.getText());
+                            Intent intent = new Intent(RecipeListActivity.this, RecipeParsedActivity.class);
+                            intent.putExtra("INGREDIENTS", text.getText());
+                            startActivity(intent);
                         }
                     });
                 } catch (FileNotFoundException e) {
