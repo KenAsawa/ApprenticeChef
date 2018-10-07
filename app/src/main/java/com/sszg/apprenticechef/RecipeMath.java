@@ -13,44 +13,45 @@ public class RecipeMath {
         input.add("1/2 cup packed light brown sugar");
         input.add("A pinch of salt");
         //Input done
-        System.out.println(GetBestMeasure(input,9,true));
+        System.out.println(GetBestMeasure(input, 9, true));
     }
-    public static ArrayList<String> GetBestMeasure(ArrayList<String> input,double divisor, Boolean giveFraction){
+
+    public static ArrayList<String> GetBestMeasure(ArrayList<String> input, double divisor, Boolean giveFraction) {
         ArrayList<String> output = new ArrayList<>();
         String[] VolumeTypes = {"gal", "L", "qt", "pt", "C", "fl oz", "Tbsp", "tsp"};
-        String[] WeightTypes = {"kg","lbs","oz","g"};
-        double[][] volumeConversions = {{1,3.84,4,8,16,128,256,768},{0.260417,1,1.04166,2.08332,4.125,33,66,200},{0.25,0.96,1,2,4,32,64,192},
-                {0.125,0.48,0.5,1,2,16,32,96},{0.0625,0.24,0.25,0.5,1,8,16,48},{0.0078125,0.03,0.03125,0.0625,0.125,1,2,6},
-                {0.00390625,0.015,0.015625,0.03125,0.0625,0.5,1,3},{0.001302083,0.005,0.00520833,0.0104166,0.020625,0.165,0.33,1},
-                {0.000260417,0.001,0.00104166,0.00208332,0.004125,0.033,0.066,0.2}};
-        double[][] weightConversions = {{1,2.20462,35.274,1000},{0.453592,1,16,453.592},{0.0283495,0.0625,1,28.3495},
-                {0.001,0.00220462,0.035274,1}};
+        String[] WeightTypes = {"kg", "lbs", "oz", "g"};
+        double[][] volumeConversions = {{1, 3.84, 4, 8, 16, 128, 256, 768}, {0.260417, 1, 1.04166, 2.08332, 4.125, 33, 66, 200}, {0.25, 0.96, 1, 2, 4, 32, 64, 192},
+                {0.125, 0.48, 0.5, 1, 2, 16, 32, 96}, {0.0625, 0.24, 0.25, 0.5, 1, 8, 16, 48}, {0.0078125, 0.03, 0.03125, 0.0625, 0.125, 1, 2, 6},
+                {0.00390625, 0.015, 0.015625, 0.03125, 0.0625, 0.5, 1, 3}, {0.001302083, 0.005, 0.00520833, 0.0104166, 0.020625, 0.165, 0.33, 1},
+                {0.000260417, 0.001, 0.00104166, 0.00208332, 0.004125, 0.033, 0.066, 0.2}};
+        double[][] weightConversions = {{1, 2.20462, 35.274, 1000}, {0.453592, 1, 16, 453.592}, {0.0283495, 0.0625, 1, 28.3495},
+                {0.001, 0.00220462, 0.035274, 1}};
         Double curAmount = 0.0;
         Double temp;
         Boolean calc = true;
         Boolean twoNum = false;
         String[] inputArray;
         String type = "";
-        for(int h=0;h<input.size();h++) {
-            inputArray = (input.get(h)).split(" ",4);
-            if(inputArray[0].contains("/")){
+        for (int h = 0; h < input.size(); h++) {
+            inputArray = (input.get(h)).split(" ", 4);
+            if (inputArray[0].contains("/")) {
                 String[] GetParts = inputArray[0].split("/");
-                curAmount = Double.parseDouble(GetParts[0])/Double.parseDouble(GetParts[1]);
-            }else if(inputArray[0].matches(".*\\d+.*")){
+                curAmount = Double.parseDouble(GetParts[0]) / Double.parseDouble(GetParts[1]);
+            } else if (inputArray[0].matches(".*\\d+.*")) {
                 curAmount = Double.parseDouble(inputArray[0]);
-                if(inputArray[1].contains("/")) {
+                if (inputArray[1].contains("/")) {
                     twoNum = true;
                     String[] GetParts = inputArray[1].split("/");
                     curAmount += Double.parseDouble(GetParts[0]) / Double.parseDouble(GetParts[1]);
                 }
-            }else{
+            } else {
                 calc = false;
                 output.add(input.get(h));
             }
-            if(calc) {
-                if(twoNum){
+            if (calc) {
+                if (twoNum) {
                     type = inputArray[2];
-                }else{
+                } else {
                     type = inputArray[1];
                 }
                 int numType = -1;
@@ -147,22 +148,23 @@ public class RecipeMath {
         }
         return output;
     }
-    public static String decimalToFraction(Double inDec, double curAmount, double divisor, String[] Types, int smallest, int numtype){
+
+    public static String decimalToFraction(Double inDec, double curAmount, double divisor, String[] Types, int smallest, int numtype) {
         int numerator = 1;
         int counter = 0;
-        double temp = Math.round(100/(inDec-(int)Math.floor(inDec)));
+        double temp = Math.round(100 / (inDec - (int) Math.floor(inDec)));
         temp /= 100;
-        while(temp != Math.ceil(temp)){
+        while (temp != Math.ceil(temp)) {
             counter++;
             numerator *= 2;
             temp *= 2;
-            if(counter == 7){
-                return (int)curAmount+"/"+(int)divisor + " " + Types[numtype];
+            if (counter == 7) {
+                return (int) curAmount + "/" + (int) divisor + " " + Types[numtype];
             }
         }
-        if((int)Math.floor(inDec) != 0) {
+        if ((int) Math.floor(inDec) != 0) {
             return (int) Math.floor(inDec) + " " + numerator + "/" + (int) temp + " " + Types[smallest];
-        }else{
+        } else {
             return numerator + "/" + (int) temp + " " + Types[smallest];
         }
     }

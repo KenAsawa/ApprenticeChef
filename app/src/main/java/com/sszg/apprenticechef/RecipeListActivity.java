@@ -179,16 +179,13 @@ public class RecipeListActivity extends AppCompatActivity implements MyRecyclerV
                 "    Salt & pepper to taste\n" +
                 "    Parsley for garnish"));
         RecipeListItem recipe3 = new RecipeListItem("pancakes", "Pancakes & Eggs", "11/09/17", ("2 cups all-purpose flour\n" +
-                "    3 tablespoons sugar\n" +
-                "    1/2 teaspoons baking powder\n" +
-                "    1 1/2 teaspoons baking soda\n" +
-                "    1/4 teaspoons kosher salt\n" +
-                "    2 /2 cups buttermilk\n" +
-                "    2 large eggs\n" +
-                "    3 tablespoons unsalted butter,\n" +
-                "    melted\n" +
-                "    Vegetable, canola or coconut oil for\n" +
-                "    the pan"));
+                "3 tablespoons sugar\n" +
+                "1/2 teaspoons baking powder\n" +
+                "1 1/2 teaspoons baking soda\n" +
+                "1/4 teaspoons kosher salt\n" +
+                "2 1/2 cups buttermilk\n" +
+                "2 large eggs\n" +
+                "3 tablespoons unsalted butter melted\n"));
         adapter.addRecipe(recipe1);
         adapter.addRecipe(recipe2);
         adapter.addRecipe(recipe3);
@@ -200,6 +197,7 @@ public class RecipeListActivity extends AppCompatActivity implements MyRecyclerV
         RecipeListItem recipeListItem = adapter.getRecipe(position);
         //Toast.makeText(this, "Title: " + recipeListItem.getRecipeName(), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(RecipeListActivity.this, RecipeParsedActivity.class);
+        System.out.println(recipeListItem.getIngredientsList());
         intent.putExtra("INGREDIENTS", recipeListItem.getIngredientsList());
         startActivity(intent);
     }

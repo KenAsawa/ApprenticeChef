@@ -76,13 +76,14 @@ public class RecipeParsedActivity extends AppCompatActivity implements ListRecyc
                                 newList = RecipeMath.GetBestMeasure(itemList, d, false);
                             }
 
+
                             //System.out.println("LIST AFTER IS : " + newList);
                             setupList(newList);
                         } else {
                             Toast.makeText(getApplicationContext(), "Please Cut Portions by a number Greater then 0", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception ex) {
-
+                        System.out.println(ex.getMessage());
                     }
 
                 }
