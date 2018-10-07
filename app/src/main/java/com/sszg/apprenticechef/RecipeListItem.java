@@ -5,9 +5,14 @@ public class RecipeListItem {
     private String imageName;
     private String recipeName;
     private String Date;
+    private String ingredientsList;
 
     public String getImageName() {
         return imageName;
+    }
+
+    public String getIngredientsList() {
+        return ingredientsList;
     }
 
     public void setImageName(String imageName) {
@@ -22,9 +27,9 @@ public class RecipeListItem {
         this.recipeName = recipeName;
     }
 
-    public RecipeListItem(String imageName, String recipeName, String date) {
+    public RecipeListItem(String imageName, String recipeName, String date, String ingredientsList) {
         this.imageName = imageName;
-
+        this.ingredientsList = ingredientsList;
         this.recipeName = recipeName;
 
         Date = date;

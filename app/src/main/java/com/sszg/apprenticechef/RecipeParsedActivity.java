@@ -15,8 +15,9 @@ public class RecipeParsedActivity extends AppCompatActivity implements ListRecyc
 
     private RecyclerView recyclerView;
     private ListRecyclerView adapter;
-    private Button portion;
+    private Button portion, fracDecimal;
     private EditText divisor;
+    private boolean fraction = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class RecipeParsedActivity extends AppCompatActivity implements ListRecyc
             }
             final ArrayList<String> itemList = new ArrayList<>();
             for (String s : items) {
+                s = s.trim();
                 String[] parts = s.split(" ");
                 if (parts.length > 3) {
                     try {
@@ -47,6 +49,18 @@ public class RecipeParsedActivity extends AppCompatActivity implements ListRecyc
             }
             portion = findViewById(R.id.portion);
             divisor = findViewById(R.id.divisor);
+            fracDecimal = findViewById(R.id.fraction);
+            fracDecimal.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fraction = !fraction;
+                    if (fraction) {
+                        fracDecimal.setText("Fraction");
+                    } else {
+                        fracDecimal.setText("Decimal");
+                    }
+                }
+            });
             setupGrid(itemList);
             portion.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -55,7 +69,13 @@ public class RecipeParsedActivity extends AppCompatActivity implements ListRecyc
                         int d = Integer.parseInt(divisor.getText().toString().trim());
                         if (d > 0) {
                             //System.out.println("LIST BEFORE IS : " + itemList);
-                            ArrayList<String> newList = RecipeMath.GetBestMeasure(itemList, d, false);
+                            ArrayList<String> newList;
+                            if (fraction) {
+                                newList = RecipeMath.GetBestMeasure(itemList, d, true);
+                            } else {
+                                newList = RecipeMath.GetBestMeasure(itemList, d, false);
+                            }
+
                             //System.out.println("LIST AFTER IS : " + newList);
                             setupList(newList);
                         } else {
